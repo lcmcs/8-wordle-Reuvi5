@@ -1,3 +1,5 @@
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,27 +32,56 @@ public class regex {
         return m.matches();
     }
 
-    public static List<String> wordleMatches (List<List<WordleResponse>> list) {
-        return null;
-    }
-    class WordleResponse {
-        char c;
-        int index;
-        LetterResponse resp;
+    public static List<String> wordleMatches (List<List<WordleResponse>> list) throws FileNotFoundException {
+        String target = "hello";
+        Pattern p = Pattern.compile(target);
+        Matcher m = p.matcher(list.toString());
+        List<String> matches = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader("valid-wordle-words.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null && m.matches()) {
+                matches.add(line);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return matches;
     }
 
-    public static void main (String[]args){
-        //System.out.println(properName("Ba"));
-        //System.out.println(integer("+5."));
+
+
+    public static void main (String[]args) throws FileNotFoundException {
+//        System.out.println(properName("Ba"));
+//        System.out.println(integer("+5."));
 //        System.out.println(ancestor("mother"));
 //        System.out.println(ancestor("grandmother"));
 //        System.out.println(ancestor("great-great-grandmother"));
 //        System.out.println(ancestor("great-great mother"));
-        System.out.println(palindrome("aabccCcbaA"));
-        System.out.println(palindrome("aabccCcbaA"));
+//        System.out.println(palindrome("aabccCcbaA"));
+//        System.out.println(palindrome("aabccCcbaA"));
 
+        List<List<WordleResponse>> multipleWords = new ArrayList<List<WordleResponse>>();
 
+        List word1 = new ArrayList<WordleResponse>(5);
+        List word2 = new ArrayList<WordleResponse>(5);
+        List word3 = new ArrayList<WordleResponse>(5);
+        List word4 = new ArrayList<WordleResponse>(5);
 
+        WordleResponse letter1 = new WordleResponse('h',0,LetterResponse.CORRECT_LOCATION);
+        word1.add(letter1);
+        WordleResponse letter2 = new WordleResponse('e',1,LetterResponse.CORRECT_LOCATION);
+        word1.add(letter2);
+        WordleResponse letter3 = new WordleResponse('l',2,LetterResponse.CORRECT_LOCATION);
+        word1.add(letter3);
+        WordleResponse letter4 = new WordleResponse('l',3,LetterResponse.CORRECT_LOCATION);
+        word1.add(letter4);
+        WordleResponse letter5 = new WordleResponse('o',4,LetterResponse.CORRECT_LOCATION);
+        word1.add(letter5);
+
+        multipleWords.add(word1);
+        System.out.println(wordleMatches(multipleWords));
 
     }
 }
