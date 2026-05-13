@@ -3,14 +3,16 @@ public class WordleResponse {
     int index;
     LetterResponse resp;
 
-    public WordleResponse(char ch, int ind, LetterResponse response){
+    public WordleResponse(char ch, int ind){
         c = ch;
         index = ind;
+    }
+
+    public void setResp(LetterResponse response){
         resp = response;
     }
 
-    @Override
-    public String toString(){
-        return String.valueOf(c);
+    public char getChar(){
+        return c;
     }
 }
