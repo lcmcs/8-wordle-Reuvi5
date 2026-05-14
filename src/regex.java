@@ -34,41 +34,38 @@ public class regex {
     }
 
     public static List<String> wordleMatches (List<List<WordleResponse>> list) throws FileNotFoundException {
-        //first set our list to proper values based on target
-        String target = "hello";
-        Pattern p = Pattern.compile(Arrays.toString(target.toCharArray()));
-        System.out.println(Arrays.toString(target.toCharArray()));
-        System.out.println(list.toString());
-        Matcher m = p.matcher(list.toString());
 
+        StringBuilder regex = new StringBuilder("^$");
         for (int i = 0; i < 5; i++) {
-            WordleResponse response = list.get(0).get(i);
-            char letter = response.getChar();
+            if (list.get(0).get(i).getResp().equals(LetterResponse.CORRECT_LOCATION)){
 
-            if (target.charAt(i) == letter){
-                response.setResp(LetterResponse.CORRECT_LOCATION);
-                System.out.println("cha ching");
-            } else if (target.contains(String.valueOf(letter))){
-                response.setResp(LetterResponse.WRONG_LOCATION);
-                System.out.println("wrong");
-            } else {
-                response.setResp(LetterResponse.WRONG_LETTER);
-                System.out.println("close");
             }
+            if (list.get(0).get(i).getResp().equals(LetterResponse.CORRECT_LOCATION)){
+
+            }
+            if (list.get(0).get(i).getResp().equals(LetterResponse.CORRECT_LOCATION)){
+
+            }
+            regex.insert(i+1,list.get(0).get(i).getChar());
         }
+        System.out.println(regex);
+
+        Pattern p = Pattern.compile(String.valueOf(regex));
 
         //then get all potential matches
         List<String> matches = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader("valid-wordle-words.txt"))) {
             String line;
-            while ((line = br.readLine()) != null && m.matches()) {
-                matches.add(line);
+            while ((line = br.readLine()) != null) {
+                Matcher m = p.matcher(line);
+                    if (m.matches()){
+                        matches.add(line);
+                    }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         return matches;
     }
 
@@ -91,27 +88,27 @@ public class regex {
         List word3 = new ArrayList<WordleResponse>(5);
         List word4 = new ArrayList<WordleResponse>(5);
 
-        WordleResponse letter1 = new WordleResponse('h',0);
+        WordleResponse letter1 = new WordleResponse('h',0, LetterResponse.CORRECT_LOCATION);
         word1.add(letter1);
-        WordleResponse letter2 = new WordleResponse('e',1);
+        WordleResponse letter2 = new WordleResponse('e',1, LetterResponse.CORRECT_LOCATION);
         word1.add(letter2);
-        WordleResponse letter3 = new WordleResponse('l',2);
+        WordleResponse letter3 = new WordleResponse('l',2, LetterResponse.CORRECT_LOCATION);
         word1.add(letter3);
-        WordleResponse letter4 = new WordleResponse('l',3);
+        WordleResponse letter4 = new WordleResponse('l',3, LetterResponse.CORRECT_LOCATION);
         word1.add(letter4);
-        WordleResponse letter5 = new WordleResponse('o',4);
+        WordleResponse letter5 = new WordleResponse('o',4, LetterResponse.CORRECT_LOCATION);
         word1.add(letter5);
 
-        WordleResponse letter6 = new WordleResponse('t',0);
-        word2.add(letter6);
-        WordleResponse letter7 = new WordleResponse('r',1);
-        word2.add(letter7);
-        WordleResponse letter8 = new WordleResponse('a',2);
-        word2.add(letter8);
-        WordleResponse letter9 = new WordleResponse('i',3);
-        word2.add(letter9);
-        WordleResponse letter10 = new WordleResponse('n',4);
-        word2.add(letter10);
+//        WordleResponse letter6 = new WordleResponse('t',0);
+//        word2.add(letter6);
+//        WordleResponse letter7 = new WordleResponse('r',1);
+//        word2.add(letter7);
+//        WordleResponse letter8 = new WordleResponse('a',2);
+//        word2.add(letter8);
+//        WordleResponse letter9 = new WordleResponse('i',3);
+//        word2.add(letter9);
+//        WordleResponse letter10 = new WordleResponse('n',4);
+//        word2.add(letter10);
 
         multipleWords.add(word1);
         //multipleWords.add(word2);

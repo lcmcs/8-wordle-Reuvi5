@@ -3,13 +3,14 @@ public class WordleResponse {
     int index;
     LetterResponse resp;
 
-    public WordleResponse(char ch, int ind){
+    public WordleResponse(char ch, int ind, LetterResponse response){
         c = ch;
         index = ind;
+        resp = response;
     }
 
-    public void setResp(LetterResponse response){
-        resp = response;
+    public LetterResponse getResp(){
+        return resp;
     }
 
     public char getChar(){
