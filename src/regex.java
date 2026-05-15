@@ -35,6 +35,7 @@ public class regex {
     }
 
     public static List<String> wordleMatches(List<List<WordleResponse>> list) throws FileNotFoundException {
+        //set up the positions
         StringBuilder[] positions = new StringBuilder[5];
 
         //this will contain a bunch of "lookaheads"
@@ -50,28 +51,41 @@ public class regex {
                 positions[i] = new StringBuilder("");
                 WordleResponse temp = list.get(j).get(i);
                 if (temp.getResp().equals(LetterResponse.CORRECT_LOCATION)) {
+                    //if correct letter then assign appropriately and then this will be the only thing at that position
                     correctLetter = temp.getChar();
                 } else if (temp.getResp().equals(LetterResponse.WRONG_LOCATION)) {
+                    //add to the lookaheads to make sure it's contained
                     contains.append("(?=.*" + temp.getChar() + ")");
+                    //add to the incorrect letters to make sure it's not at that location
                     incorrectLetters.append(temp.getChar());
                 } else {
+                    //add to the lookaheads to make sure it's NOT contained
                     contains.append("(?!.*" + temp.getChar() + ")");
                     incorrectLetters.append(temp.getChar());
                 }
 
                 if (correctLetter != null){
+                    //this ensures that we don't add the '[^xyz]' if we have the correct letter
                     positions[i].append(correctLetter);
                 } else {
+                    //otherwise add a '[^xyz]' with all bad letters
                     positions[i].append("[^" + incorrectLetters + "]");
                 }
             }
         }
-        StringBuilder correctLocation = new StringBuilder("^" + positions[0] + positions[1] + positions[2] + positions[3] + positions[4]);
+        //add all the positions
+        StringBuilder correctLocation = new StringBuilder("^" +
+                positions[0] +
+                positions[1] +
+                positions[2] +
+                positions[3] +
+                positions[4]);
 
         contains.append(".*$");
+
+        //just so i can see how the regex's come out
         System.out.println(correctLocation);
         System.out.println(contains);
-
 
         Pattern p1 = Pattern.compile(String.valueOf(correctLocation));
         Pattern p2 = Pattern.compile(String.valueOf(contains));
@@ -80,6 +94,13 @@ public class regex {
         return matches;
     }
 
+    /**
+     * private method will keep things a drop more organized
+     * this will test all the words in the text document against BOTH regexs
+     * @param p1 regex #1
+     * @param p2 regex #2
+     * @return list of words that match BOTH regexs
+     */
     private static List<String> getStringList(Pattern p1, Pattern p2) {
         List<String> matches = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader("valid-wordle-words.txt"))) {
