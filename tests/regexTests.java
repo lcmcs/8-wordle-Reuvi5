@@ -107,4 +107,40 @@ class regexTest {
         List<String> result = regex.wordleMatches(userInput);
         assertEquals("giant", result.get(0));
     }
+
+    @Test
+    void testWordleMultipleWords() throws FileNotFoundException {
+        List<List<WordleResponse>> userInput = new ArrayList<>();
+        List<WordleResponse> word1 = new ArrayList<>();
+        List<WordleResponse> word2 = new ArrayList<>();
+        List<WordleResponse> word3 = new ArrayList<>();
+
+        word1.add(new WordleResponse('a', 0, LetterResponse.CORRECT_LOCATION));
+        word1.add(new WordleResponse('e', 1, LetterResponse.WRONG_LOCATION));
+        word1.add(new WordleResponse('r', 2, LetterResponse.WRONG_LOCATION));
+        word1.add(new WordleResponse('s', 3, LetterResponse.WRONG_LETTER));
+        word1.add(new WordleResponse('t', 4, LetterResponse.WRONG_LETTER));
+
+        word2.add(new WordleResponse('l', 0, LetterResponse.WRONG_LOCATION));
+        word2.add(new WordleResponse('e', 1, LetterResponse.WRONG_LOCATION));
+        word2.add(new WordleResponse('o', 2, LetterResponse.WRONG_LETTER));
+        word2.add(new WordleResponse('u', 3, LetterResponse.WRONG_LETTER));
+        word2.add(new WordleResponse('d', 4, LetterResponse.WRONG_LETTER));
+
+        word3.add(new WordleResponse('p', 0, LetterResponse.WRONG_LETTER));
+        word3.add(new WordleResponse('c', 1, LetterResponse.WRONG_LETTER));
+        word3.add(new WordleResponse('m', 2, LetterResponse.WRONG_LETTER));
+        word3.add(new WordleResponse('h', 3, LetterResponse.WRONG_LETTER));
+        word3.add(new WordleResponse('g', 4, LetterResponse.WRONG_LETTER));
+
+        userInput.add(word1);
+        userInput.add(word2);
+        userInput.add(word3);
+
+        List<String> result = regex.wordleMatches(userInput);
+        assertTrue(result.contains("abler"));
+        assertTrue(result.contains("aller"));
+        assertTrue(result.contains("areal"));
+        assertFalse(result.contains("alert"));
+    }
 }
