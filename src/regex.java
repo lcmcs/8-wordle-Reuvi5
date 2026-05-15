@@ -35,31 +35,45 @@ public class regex {
 
     public static List<String> wordleMatches (List<List<WordleResponse>> list) throws FileNotFoundException {
 
-        StringBuilder regex = new StringBuilder("^$");
+        StringBuilder correctLocation = new StringBuilder("^");
+        StringBuilder contains = new StringBuilder("^");
+
         for (int i = 0; i < 5; i++) {
-            if (list.get(0).get(i).getResp().equals(LetterResponse.CORRECT_LOCATION)){
-
+            StringBuilder correctLocationTemp = new StringBuilder("");
+            WordleResponse temp = list.get(0).get(i);
+            if (temp.getResp().equals(LetterResponse.CORRECT_LOCATION)){
+                correctLocationTemp.append(temp.getChar());
             }
-            if (list.get(0).get(i).getResp().equals(LetterResponse.CORRECT_LOCATION)){
-
+            else if (temp.getResp().equals(LetterResponse.WRONG_LOCATION)){
+                contains.append("(?=.*" + temp.getChar() + ")");
+                correctLocation.append( "[^" + temp.getChar() + "]");
             }
-            if (list.get(0).get(i).getResp().equals(LetterResponse.CORRECT_LOCATION)){
-
+            else {
+                contains.append("(?!.*" + temp.getChar() + ")");
+                correctLocationTemp.append(".");
             }
-            regex.insert(i+1,list.get(0).get(i).getChar());
+            correctLocation.append(correctLocationTemp);
         }
-        System.out.println(regex);
+        contains.append(".*$");
+        System.out.println(correctLocation);
+        System.out.println(contains);
 
-        Pattern p = Pattern.compile(String.valueOf(regex));
 
-        //then get all potential matches
+        Pattern p1 = Pattern.compile(String.valueOf(correctLocation));
+        Pattern p2 = Pattern.compile(String.valueOf(contains));
+
+        List<String> matches = getStringList(p1, p2);
+        return matches;
+    }
+
+    private static List<String> getStringList(Pattern p1, Pattern p2) {
         List<String> matches = new ArrayList<>();
-
         try (BufferedReader br = new BufferedReader(new FileReader("valid-wordle-words.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
-                Matcher m = p.matcher(line);
-                    if (m.matches()){
+                Matcher m1 = p1.matcher(line);
+                Matcher m2 = p2.matcher(line);
+                    if (m1.matches() && m2.matches()){
                         matches.add(line);
                     }
             }
@@ -68,7 +82,6 @@ public class regex {
         }
         return matches;
     }
-
 
 
     public static void main (String[]args) throws FileNotFoundException {
@@ -88,16 +101,23 @@ public class regex {
         List word3 = new ArrayList<WordleResponse>(5);
         List word4 = new ArrayList<WordleResponse>(5);
 
-        WordleResponse letter1 = new WordleResponse('h',0, LetterResponse.CORRECT_LOCATION);
-        word1.add(letter1);
-        WordleResponse letter2 = new WordleResponse('e',1, LetterResponse.CORRECT_LOCATION);
-        word1.add(letter2);
-        WordleResponse letter3 = new WordleResponse('l',2, LetterResponse.CORRECT_LOCATION);
-        word1.add(letter3);
-        WordleResponse letter4 = new WordleResponse('l',3, LetterResponse.CORRECT_LOCATION);
-        word1.add(letter4);
-        WordleResponse letter5 = new WordleResponse('o',4, LetterResponse.CORRECT_LOCATION);
-        word1.add(letter5);
+        word1.add(new WordleResponse('c',0, LetterResponse.CORRECT_LOCATION));
+        word1.add(new WordleResponse('r',1, LetterResponse.WRONG_LOCATION));
+        word1.add(new WordleResponse('a',2, LetterResponse.WRONG_LETTER));
+        word1.add(new WordleResponse('n',3, LetterResponse.WRONG_LOCATION));
+        word1.add(new WordleResponse('e',4, LetterResponse.WRONG_LETTER));
+
+        word2.add(new WordleResponse('c',0, LetterResponse.WRONG_LOCATION));
+        word2.add(new WordleResponse('o',1, LetterResponse.WRONG_LOCATION));
+        word2.add(new WordleResponse('u',2, LetterResponse.WRONG_LOCATION));
+        word2.add(new WordleResponse('g',3, LetterResponse.WRONG_LOCATION));
+        word2.add(new WordleResponse('h',4, LetterResponse.WRONG_LOCATION));
+
+        word3.add(new WordleResponse('t',0, LetterResponse.WRONG_LETTER));
+        word3.add(new WordleResponse('r',1, LetterResponse.WRONG_LETTER));
+        word3.add(new WordleResponse('a',2, LetterResponse.WRONG_LETTER));
+        word3.add(new WordleResponse('i',3, LetterResponse.WRONG_LETTER));
+        word3.add(new WordleResponse('n',4, LetterResponse.WRONG_LETTER));
 
 //        WordleResponse letter6 = new WordleResponse('t',0);
 //        word2.add(letter6);
@@ -110,8 +130,8 @@ public class regex {
 //        WordleResponse letter10 = new WordleResponse('n',4);
 //        word2.add(letter10);
 
-        multipleWords.add(word1);
-        //multipleWords.add(word2);
+        multipleWords.add(word3);
+        multipleWords.add(word2);
         System.out.println(wordleMatches(multipleWords));
 
     }
